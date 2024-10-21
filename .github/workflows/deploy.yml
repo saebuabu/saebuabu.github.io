@@ -27,7 +27,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.DEPLOY_KEY }}  # Voegt de juiste key toe
+          github_token: ${{ secrets.PERSONAL_TOKEN }}  # Voegt de juiste key toe
           publish_dir: dist
           destination_branch: gh-pages  # Voegt de juiste branch toe
           external_repository: saebuabu/saebuabu.github.io 
