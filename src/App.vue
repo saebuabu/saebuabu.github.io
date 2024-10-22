@@ -13,10 +13,18 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin: 0;
 }
 
+/* Geef de nav een interessante achtergrondfoto van internet, en haal de marges aan alle zijden weg */
 nav {
   padding: 30px;
+  background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  margin: 0;
+
 }
 
 nav a {
