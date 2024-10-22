@@ -1,5 +1,5 @@
 <template>
-    <StartPage msg="Start Page of the AI tooling App"/>
+    <StartPage msg="Start Pagina"/>
 </template>
 
 <script>

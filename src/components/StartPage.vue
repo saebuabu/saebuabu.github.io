@@ -1,6 +1,7 @@
 <template>
-  <h1>Start page</h1>
-  <p>{{ msg }}</p>
+  <h1>{{ msg }}</h1>
+  <p>Dit is de startpagina van de site waarin ik de integratie mogelijkheden onderzoek van het gebruik van Google AI Studio in een web applicatie. <br/>
+   Klik de verschillende pagina's aan in het menu om het verder uit te proberen....</p>
 </template>
 
 <script>
@@ -11,6 +12,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 h1 {
