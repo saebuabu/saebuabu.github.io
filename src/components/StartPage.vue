@@ -1,21 +1,21 @@
 <template>
   <h1>{{ msg }}</h1>
-  <p>Op deze site onderzoek ik de mogelijkheden van het gebruik van Google AI
-    Studio (Gemini) in een web applicatie. 
-    </p>
+  <p>
+  Welkom bij AI in de klas. Dit zijn testjes en uitprobeersels om AI in de klas te gebruiken en te kijken of het redelijk eenvoudig te implementeren is.
+  </p>
   <p>
     Ideeën om eens te proberen:
-  <ul>
-    <li>Chatbot met een tuned model, gericht op het vak en het onderwerp</li>
-    <li>Image recognition, welke leerlingen zijn aan het luisteren?</li>
-    <li>Image recognition, welke leerlingen zijn aanwezig?</li>
-    <li>Image recognition, wie is wie op de foto?</li>
-    <li>Image recognition, welke leerlingen zijn aan het werk?</li>
-    <li>Image recognition, welke leerlingen zijn aan het spelen?</li>
-    <li>Image recognition, welke leerlingen zijn aan het slapen?</li>
-    <li>Image recognition, welke leerlingen zijn aan het eten?</li>
-  </ul>
   </p>
+  <ul>
+    <li>Chatbot met een tuned model, gericht op het vak en het onderwerp, als vraagbaak voor de student</li>
+    <li>Speech to text, welke leerlingen zijn aanwezig en afwezig?</li>
+    <li>Generatie AI: 
+      <ul>
+        <li>Genereer vragen over de behandelde stof</li>
+        <li>Genereer een samenvatting van de behandelde stof</li>
+      </ul>
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -33,10 +33,12 @@ h1 {
   font-size: 2em;
   text-align: center;
 }
+
 p {
   font-size: 1.5em;
   text-align: center;
 }
+
 /* geen list-tryle bij de ul, teksten limnks uitlijnen, maar met een auto marge aan weerszijden */
 ul {
   list-style-type: none;

@@ -1,7 +1,8 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/ai">Ai test 1</router-link>
+    <router-link to="/ai">Ai test 1</router-link> |
+    <router-link to="/luister">Fluister naam</router-link>
   </nav>
   <router-view/>
 </template>
@@ -35,4 +36,12 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+
+}
+
 </style>
