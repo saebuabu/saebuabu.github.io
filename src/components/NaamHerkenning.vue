@@ -4,6 +4,7 @@
         <p>Spreek de naam van de leerling en kijk of de naam wordt herkend.</p>
         <p> Te herkennen namen zijn: {{ namenLijst }}</p>
       <button @click="startLuisteren">{{ instructie }}</button>
+      
       <p v-if="herkendeNaam">Herkende naam: {{ herkendeNaam }}</p>
       <p v-else>Geen bekende naam gevonden.</p>
     </div>
