@@ -4,21 +4,19 @@
         <p>Spreek de naam van de leerling en kijk of de naam wordt herkend.</p>
         <p> Te herkennen namen zijn: {{ namenLijst }}</p>
       <button @click="startLuisteren">{{ instructie }}</button>
-      
       <p v-if="herkendeNaam">Herkende naam: {{ herkendeNaam }}</p>
       <p v-else>Geen bekende naam gevonden.</p>
     </div>
   </template>  
   <script>
   import { ref } from 'vue';
-  
+  import namen from '../assets/data/IHO22S1A.js';
 
   export default {
     setup() {
   
-      // Voeg namen toe aan je namenlijst 
-      const namenLijst = ref(["Abdullah", "Joris", "Alyssia", "Aliessia", "Rob", "Noah","Job"]);		 
-  
+      const namenLijst = ref([...namen]);
+      
       // Reactive variabelen voor de app-status
       const herkendeNaam = ref(null);
       const instructie = ref("Start met luisteren");
@@ -63,7 +61,15 @@
   
       // Functie om een naam in de lijst te vinden
       const zoekNaam = (tekst) => {
-        let naam = namenLijst.value.find(name => tekst.includes(name));
+        // Zoek de naam in de lijst die in de tekst voorkomt, het kan de voornaam of achternaam zijn in de namenlijst
+
+        let naam = namenLijst.value.find(naam => tekst.includes(naam));
+
+        //als de naam niet gevonden is voeg deze toe aan de lijst
+        if (!naam) {
+          namenLijst.value.push(tekst);
+          naam = tekst;
+        }
         return naam;
       };
   
