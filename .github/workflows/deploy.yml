@@ -17,7 +17,7 @@ jobs:
  
       - name: Set environment variable
       run: echo "${{ secrets.WEBSITE_ENV_PRODUCTION }}" > .env
-      
+
       - name: Install 🔧
         run: npm install
 
@@ -32,6 +32,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
-
-      - name: Set environment variable
-        run: echo "${{ secrets.WEBSITE_ENV_PRODUCTION }}" > .env
