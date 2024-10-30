@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
  
       - name: Set environment variable
-      run: echo "${{ secrets.WEBSITE_ENV_PRODUCTION }}" > .env
+        run: echo ${{ secrets.WEBSITE_ENV_PRODUCTION }} > .env
 
       - name: Install 🔧
         run: npm install
