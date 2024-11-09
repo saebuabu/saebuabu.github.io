@@ -1,12 +1,14 @@
 <template>
-    <div>
-      <h1>Naamherkenning</h1>
-        <p>Spreek de naam van de leerling en kijk of de naam wordt herkend.</p>
-        <p> Te herkennen namen zijn: {{ namenLijst }}</p>
-      <button @click="startLuisteren">{{ instructie }}</button>
-      <p v-if="herkendeNaam">Herkende naam: {{ herkendeNaam }}</p>
-      <p v-else>Geen bekende naam gevonden.</p>
+   <div class="container mt-5">
+    <h1 class="text-center mb-4">Naam herkenning</h1>
+    <p class="text-center">Spreek de naam van de leerling en kijk of de naam wordt herkend.</p>
+    <p class="text-center">Te herkennen namen zijn: {{ namenLijst }}</p>
+    <div class="text-center mb-4">
+        <button class="btn btn-primary" @click="startLuisteren">{{ instructie }}</button>
     </div>
+    <p v-if="herkendeNaam" class="text-center">Herkende naam: {{ herkendeNaam }}</p>
+    <p v-else class="text-center">Geen bekende naam gevonden.</p>
+</div>
   </template>  
   <script>
   import { ref } from 'vue';

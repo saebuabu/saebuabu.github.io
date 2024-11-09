@@ -1,8 +1,8 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/ai">Ai test 1</router-link> |
-    <router-link to="/luister">Fluister naam</router-link>
+    <router-link to="/ai">Ai gedicht</router-link> |
+    <router-link to="/luister">Audio calculator</router-link>
   </nav>
   <router-view/>
 </template>
@@ -11,18 +11,16 @@
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin: 0;
-}
+  /* haal een andere achtergrondfoto van internet */
+  background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308');
 
-/* Geef de nav een interessante achtergrondfoto van internet, en haal de marges aan alle zijden weg */
-nav {
-  padding: 30px;
-  background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
   background-size: cover;
   background-position: center;
+  margin: 0;
+  min-height: 100vh;
+}
+nav {
+  padding: 30px;
   color: white;
   margin: 0;
 

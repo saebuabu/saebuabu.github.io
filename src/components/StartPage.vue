@@ -1,21 +1,19 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <p>
-  Welkom bij AI in de klas. Dit zijn testjes en uitprobeersels om AI in de klas te gebruiken en te kijken of het redelijk eenvoudig te implementeren is.
-  </p>
-  <p>
-    Ideeën om eens te proberen:
-  </p>
-  <ul>
-    <li>Chatbot met een tuned model, gericht op het vak en het onderwerp, als vraagbaak voor de student</li>
-    <li>Speech to text, welke leerlingen zijn aanwezig en afwezig?</li>
-    <li>Generatie AI: 
-      <ul>
-        <li>Genereer vragen over de behandelde stof</li>
-        <li>Genereer een samenvatting van de behandelde stof</li>
-      </ul>
-    </li>
-  </ul>
+
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>{{ msg }}</h1>
+        <p>
+          Deze site is gemaakt met AI (Github co-pilot) en applicatie mogelijkheden te onderzoeken met Gemini. <br>Ook de content wordt gegenereerd door AI (Github co-pilot).
+          Gaandewege de komende weken, maanden (nov 2024) zal de site worden uitgebreid met functionaliteiten. 
+        </p>
+      </div>
+    </div>
+    </div>
+
+
 </template>
 
 <script>
@@ -29,6 +27,15 @@ export default {
 
 
 <style scoped>
+
+
+.container {
+  /* achtergrondkleur van de container */
+  background-color: #f1f1f1;
+  margin: 0.5em auto;
+  width: 50%;
+}
+
 h1 {
   font-size: 2em;
   text-align: center;
