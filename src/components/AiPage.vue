@@ -19,10 +19,15 @@
                     <option value="liefde">Liefde</option>
                     <option value="dood">Dood</option>
                     <option value="de natuur">De natuur</option>
-                    <option value="natuurverschijnselenen">Natuurverschijnselenen</option>
+                    <option value="wind">Wind</option>
+                    <option value="de zee">De zee</option>
+                    <option value="de stad">De stad</option>
                     <option value="moeder">Moeder</option>
                     <option value="vader">Vader</option>
                     <option value="kind">Kind</option>
+                    <option value="vrouw">Vrouw</option>
+                    <option value="broer">Broer</option>
+                    <option value="geboorte">Geboorte</option>
                     <option value="vriendschap">Vriendschap</option>
                     <option value="ouder worden">Ouder worden</option>
                 </select>

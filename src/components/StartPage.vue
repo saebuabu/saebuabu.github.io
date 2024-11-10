@@ -1,7 +1,7 @@
 <template>
 
   
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
         <h1>{{ msg }}</h1>
@@ -29,11 +29,18 @@ export default {
 <style scoped>
 
 
-.container {
+.container-fluid {
   /* achtergrondkleur van de container */
   background-color: #f1f1f1;
   margin: 0.5em auto;
-  width: 50%;
+  width: 80%;
+}
+
+/* container-fluid heeft 50% breedte bij  brede schermen */
+@media (min-width: 1200px) {
+  .container-fluid {
+    width: 50%;
+  } 
 }
 
 h1 {
