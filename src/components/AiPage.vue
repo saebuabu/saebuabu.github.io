@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="prompt">Extra info</label>
+                <label for="prompt">Geef de AI extra informatie</label>
                 <textarea class="form-control" v-model="prompt" cols="30" rows="5"
                     placeholder="Geef de context, je rol, beschrijf de situatie, je doel" />
             </div>
