@@ -27,8 +27,12 @@ export default {
 
 
 <style scoped>
+h1 {
+  font-size: 2em;
+  text-align: center;
+  color: var(--primary-color);
 
-
+}
 .container-fluid {
   /* achtergrondkleur van de container */
   background-color: #f1f1f1;
@@ -43,10 +47,6 @@ export default {
   } 
 }
 
-h1 {
-  font-size: 2em;
-  text-align: center;
-}
 
 p {
   font-size: 1.5em;

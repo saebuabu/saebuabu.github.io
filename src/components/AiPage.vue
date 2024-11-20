@@ -129,6 +129,13 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-size: 2em;
+  text-align: center;
+  color: var(--primary-color);
+
+}
+
 input {
     margin-right: 10px;
     width: 100%;

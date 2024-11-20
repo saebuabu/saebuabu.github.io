@@ -19,6 +19,19 @@
   margin: 0;
   min-height: 100vh;
 }
+
+:root {
+  --primary-color: rgb(69, 14, 57);
+  --secondary-color: #35495e;
+  --tertiary-color: #f1f1f1;
+}
+
+h1 {
+  font-size: 2em;
+  text-align: center;
+  color: var(--primary-color);
+}
+
 nav {
   padding: 30px;
   color: white;
@@ -32,7 +45,7 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #42b983;
+  color: var(--primary-color);
 }
 
 nav a {
