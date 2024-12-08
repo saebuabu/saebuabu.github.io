@@ -6,8 +6,13 @@
       <div class="col-md-12">
         <h1>{{ msg }}</h1>
         <p>
-          Deze site is gemaakt met AI (Github co-pilot) en applicatie mogelijkheden te onderzoeken met Gemini. <br>Ook de content wordt gegenereerd door AI (Github co-pilot).
-          Gaandewege de komende weken, maanden (nov 2024) zal de site worden uitgebreid met functionaliteiten. 
+          Speeltuin met nu AI gedicht tutor, audio calculator en visuals met Hydra.
+          Onderzoek van web API en AI modellen, zoals Google AI en Hydra toegepast op creatieve toepassingen.
+        </p>
+        <p>Zowel de content als de html code, css en javascript wordt ingefluisterd door Github Co-pilot</p>
+        <p>Een interessante vraag is hoe het werk van een Software Developer verandert met een alomtegenwoordige AI assistent op de achtergrond. 
+          Zal er een hogere productiviteit van de developer zijn, zullen er minder ontwikkelaars nodig zijn?<br/> 
+          Kan veel routine werk dan door laag opgeleide developers geassisteerd door AI worden overgenomen?
         </p>
       </div>
     </div>

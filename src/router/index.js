@@ -7,7 +7,7 @@ const routes = [
     name: 'StartPage',
     component: StartPage,
     props: {
-      msg: 'Start Pagina'
+      msg: 'Welkom'
     }
   },
   {
