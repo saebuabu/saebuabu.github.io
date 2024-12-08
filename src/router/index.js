@@ -22,6 +22,11 @@ const routes = [
     path: '/luister',
     name: 'luisteren',
     component: () => import(/* webpackChunkName: "about" */ '../components/NaamHerkenning.vue')
+  },
+  {
+    path: '/hydra',
+    name: 'hydra',
+    component: () => import(/* webpackChunkName: "about" */ '../components/HydraBox.vue')
   }
 ]
 
