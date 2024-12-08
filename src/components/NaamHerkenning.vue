@@ -14,7 +14,7 @@
     <div class="text-center mb-4">
       <button class="btn btn-primary" @click="startLuisteren">{{ instructie }}</button>
     </div>
-    <p class="text-center">
+    <div class="text-center">
     <ul>
       <li v-for="get in getallen" v-bind:key="get">
         {{ get }}
@@ -22,7 +22,7 @@
     </ul>
     <button class="btn btn-primary" >Bewerking:{{ bewerking }}</button><br>
     <button class="btn btn-primary" >Uitkomst: {{ uitkomst }}</button>
-    </p>
+  </div>
   </div>
 </template>
 <script>
