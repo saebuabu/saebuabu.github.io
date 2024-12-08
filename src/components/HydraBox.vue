@@ -1,9 +1,11 @@
 <template>
     <div class="dummy"></div>
+    <div id="audio" class="audio"></div>
 </template>
 <script>
 import Hydra from 'hydra-synth'
 
+ /* eslint-disable */
 export default {
     name: 'HydraBox',
     setup() {
@@ -17,28 +19,18 @@ export default {
             canvas.style.overflow = 'hidden';
 
             const h = new Hydra({
-                makeGlobal: false,
+                makeGlobal: true,
                 detectAudio: false,
                 canvas: canvas
-            }).synth
+            }).synth;
 
-
-            /*h.osc(10, 0.1, 0.8)
-                .color(0.5, 0.8, 1)
-                .rotate(0.1)
-                .kaleid(3)
-                .pixelate(100, 100)
-                .out();
-            */
-            h.voronoi(20, 0.3, .2).shift(0.1, 0.9, 0.3).scroll(
+            s0.initCam();
+            src(s0).mult(noise(10),0.1).add(voronoi(30,0.6,.2).shift(0.1,0.9,0.3))
+            .scroll(
                 () => -h.mouse.x / h.width,
                 () => -h.mouse.y / h.height)
-                .kaleid(3)
-                .scale(1.01)
-                .rotate(0.1)
-                .out();
-
-
+            .out()
+            
             document.querySelector("#app").appendChild(canvas);
 
             return { hydra: h }
