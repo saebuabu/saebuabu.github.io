@@ -5,7 +5,7 @@
 <script>
 import Hydra from 'hydra-synth'
 
- /* eslint-disable */
+/* eslint-disable */
 export default {
     name: 'HydraBox',
     setup() {
@@ -24,23 +24,51 @@ export default {
                 canvas: canvas
             }).synth;
 
-            s0.initCam();
-            src(s0).add(voronoi(1,0.1,3)).shift(1,0.9,0.3)
-            .modulate(osc(8.219, -0.816, 39.394,()=>h.a.fft[0]*2))
-            .scale([0.1,0.5,0.75,1,1.5,2].fast(0.25))
-            .scroll(
-                () => -h.mouse.x / h.width,
-                () => -h.mouse.y / h.height)
-            .out()
+            const hydra1 = () => {
+                s0.initCam();
+                src(s0).add(voronoi(1, 0.1, 3)).shift(1, 0.9, 0.3)
+                    .modulate(osc(8.219, -0.816, 39.394, () => h.a.fft[0] * 2))
+                    .scale([0.1, 0.5, 0.75, 1, 1.5, 2].fast(0.25))
+                    .scroll(
+                        () => -h.mouse.x / h.width,
+                        () => -h.mouse.y / h.height)
+                    .out()
+                h.bmp = 30
+            }
 
-            h.bmp=30
-            
+            const hydra2 = () => {
+                osc(13, 0, 1)
+                    .kaleid()
+                    .mask(shape(4, 0.3, 1))
+                    .modulateRotate(shape(4, 0.1, 1))
+                    .modulateRotate(shape(4, 0.1, 0.9))
+                    .modulateRotate(shape(4, 0.1, 0.8))
+                    .scale(0.3)
+                    .add(shape(4, 0.2, 1).color(0.3, 1, 1, 0.5))
+                    .rotate(() => time)
+                    .out()
+            }
+
+            const hydra3 = () => {
+                osc(100, -0.01245, 1).pixelate(50).kaleid(() => (Math.sin(time / 8) * 9 + 3)).rotate(0, 0.125)
+                    .modulateRotate(shape(3).scale(() => (Math.cos(time) * 2)).rotate(0, -0.25)).diff(src(o0).brightness(0.3))
+                    .out()
+            }
+
+            const hydraFunctions = [hydra1, hydra2, hydra3] // Add more hydra functions here
+            setInterval(() => {
+                const randomHydraFunction = hydraFunctions[Math.floor(Math.random() * hydraFunctions.length)]
+                randomHydraFunction()
+            }, 5000)
+
+
+
             document.querySelector("#app").appendChild(canvas);
 
-            return { hydra: h }
+            return { hydra: h, ...hydraFunctions }
         }
         else {
-            return { hydra: null }
+            return { hydra: null, hydra1: null, hydra2: null, hydra3: null }
         }
     }
 }

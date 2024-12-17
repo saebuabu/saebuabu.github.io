@@ -2,8 +2,8 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/ai">Ai gedicht</router-link> |
-    <router-link to="/luister">Audio calculator</router-link> |
-    <router-link to="/hydra">Visuals</router-link>
+    <router-link to="/luister">Audio calc</router-link> |
+    <router-link to="/hydra">Hydra Visuals</router-link>
   </nav>
   <router-view />
   <!-- fixed donkere footer met een link naar socials en naar abu.saebu.nl -->
