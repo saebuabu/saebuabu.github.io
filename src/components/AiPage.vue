@@ -67,8 +67,9 @@
         <div class="row mb-3">
             <div class="text-center mb-4">
                 <button v-if="phase == 0" class="btn btn-primary" @click="getPoem">Genereer gedicht</button>&nbsp;
-                <button v-if="phase > 0" class="btn btn-primary" @click="rewritePoem">Herschrijf gedicht</button>&nbsp;
                 <input  style="margin-top: 0.5em;" v-if="phase > 0" type="text" class="form-control" v-model="feedback" placeholder="Geef feedback voor verbeterde versie">
+
+                <button v-if="phase > 0" class="btn btn-primary" @click="rewritePoem">Herschrijf gedicht</button>&nbsp;
                 <hr/>
                 <button v-if="phase > 0" class="btn btn-primary" @click="resetPoem">Reset gedicht</button>
             </div>

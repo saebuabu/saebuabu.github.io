@@ -2,14 +2,13 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/ai">Ai gedicht</router-link> |
-    <router-link to="/luister">Audio calc</router-link> |
     <router-link to="/hydra">Hydra Visuals</router-link>
   </nav>
   <router-view />
   <!-- fixed donkere footer met een link naar socials en naar abu.saebu.nl -->
   <footer>
       <div class="footer-column">
-        <h4>Abu Saebu is docent, muzikant, developer, tekstschrijver, dichter, docent en coach.</h4>
+        <h4>Abu Saebu is developer, muzikant, tekstschrijver, dichter, docent en coach.</h4>
       </div>
       <div class="footer-column">
         <a href="https://www.linkedin.com/in/abusaebu/" target="_blank">LinkedIn</a>
@@ -22,8 +21,9 @@
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* haal een andere achtergrondfoto van internet */
-  background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308');
+  /* gebruik een achtergrond kleur met een gradient die van boven donkerder is dan naar beneden  */
+
+  background-image: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
 
   background-size: cover;
   background-position: center;
@@ -36,6 +36,7 @@
   --secondary-color: #35495e;
   --tertiary-color: #f1f1f1;
   --quaternary-color: #2f0533;
+  --nav-current-color: #80c9e5;
 }
 
 h1 {
@@ -63,7 +64,7 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: var(--primary-color);
+  color: var(--nav-current-color);
 }
 
 nav a {
