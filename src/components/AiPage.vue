@@ -13,6 +13,7 @@
                         <option value="ode">Ode</option>
                         <option value="klankdicht">Klankdicht</option>
                         <option value="rap">Rap</option>
+                        <option value="valentijn">Valentijn</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -31,6 +32,9 @@
                         <option value="broer">Broer</option>
                         <option value="geboorte">Geboorte</option>
                         <option value="vriendschap">Vriendschap</option>
+                        <option value="buurmeisje">Buurmeisje</option>
+                        <option value="collega">Collega</option>
+                        <option value="vrouw">Vrouw/vriendin</option>
                         <option value="ouder worden">Ouder worden</option>
                     </select>
                 </div>

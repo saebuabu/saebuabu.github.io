@@ -19,9 +19,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../components/AiPage.vue')
   },
   {
-    path: '/luister',
-    name: 'luisteren',
-    component: () => import(/* webpackChunkName: "about" */ '../components/NaamHerkenning.vue')
+    path: '/zien',
+    name: 'zien',
+    component: () => import(/* webpackChunkName: "about" */ '../components/AiImages.vue')
   },
   {
     path: '/hydra',
