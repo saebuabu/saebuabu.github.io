@@ -13,10 +13,22 @@
       <div class="footer-column">
         <a href="https://www.linkedin.com/in/abusaebu/" target="_blank">LinkedIn</a>
         <a href="https://abu.saebu.nl" target="_blank">abu.saebu.nl</a>
+        <span>versiedatum: {{ versionDate }}</span>
       </div>
   </footer>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      versionDate: document.lastModified
+    };
+  }
+};
+
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

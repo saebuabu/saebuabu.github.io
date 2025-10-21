@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-md-12">
         <h1>{{ msg }}</h1>
-        <p>Deze applicatie onderzoekt hoe je creatief kunt zijn met behulp van kunstmatige intelligentie. </p>  
+        <p>Deze applicatie onderzoekt hoe je creatief kunt zijn met behulp van kunstmatige intelligentie en out-of-the-box tools die ik toevallig tegenkom.</p>
       </div>
     </div>
     </div>

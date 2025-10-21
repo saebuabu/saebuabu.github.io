@@ -150,4 +150,11 @@ label {
     font-weight: bold;
     color: #fff
 }
+div.aipage {
+    margin: 0 auto;
+}
+h1 {
+    color: var(--tertiary-color);
+    margin-bottom: 0;
+}
 </style>
