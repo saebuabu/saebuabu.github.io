@@ -5,13 +5,7 @@
     <div class="row">
       <div class="col-md-12">
         <h1>{{ msg }}</h1>
-        <p>
-          Speeltuin met een AI gedicht generator en visuals met Hydra.
-          Onderzoek van web API en AI modellen, zoals Google AI en Hydra toegepast op creatieve toepassingen.
-        </p>
-        <p>Zowel de functionaliteit als de content als de html code, css en javascript wordt ingefluisterd door ChatGpt en Github Co-pilot</p>
-        <p>Spelenderwijs leren en ontdekken.
-        </p>
+        <p>Deze applicatie onderzoekt hoe je creatief kunt zijn met behulp van kunstmatige intelligentie. </p>  
       </div>
     </div>
     </div>
