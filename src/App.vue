@@ -2,7 +2,8 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/ai">Ai gedicht</router-link> |
-    <router-link to="/hydra">Hydra Visuals</router-link>
+    <router-link to="/hydra">Hydra Visuals</router-link> |
+    <router-link to="/spanish">Spanish Coach</router-link>
   </nav>
   <router-view />
   <!-- fixed donkere footer met een link naar socials en naar abu.saebu.nl -->

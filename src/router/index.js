@@ -27,6 +27,11 @@ const routes = [
     path: '/hydra',
     name: 'hydra',
     component: () => import(/* webpackChunkName: "about" */ '../components/HydraBox.vue')
+  },
+  {
+    path: '/spanish',
+    name: 'spanish',
+    component: () => import(/* webpackChunkName: "about" */ '../components/SpanishCoach.vue')
   }
 ]
 
