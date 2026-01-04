@@ -24,37 +24,54 @@ export default {
 
 
 <style scoped>
-h1 {
-  font-size: 2em;
-  text-align: center;
-  color: var(--primary-color);
-
-}
 .container-fluid {
-  /* achtergrondkleur van de container */
-  background-color: #f1f1f1;
-  margin: 0.5em auto;
-  width: 80%;
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-/* container-fluid heeft 50% breedte bij  brede schermen */
-@media (min-width: 1200px) {
-  .container-fluid {
-    width: 50%;
-  } 
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 p {
-  font-size: 1.5em;
+  font-size: 1.25rem;
+  line-height: 1.8;
   text-align: center;
+  color: var(--text-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* geen list-tryle bij de ul, teksten limnks uitlijnen, maar met een auto marge aan weerszijden */
 ul {
   list-style-type: none;
   text-align: center;
-  margin: auto;
-  width: 50%;
+  margin: 2rem auto;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    margin: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+  }
 }
 </style>

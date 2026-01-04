@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5 spanish-coach">
-        <h1 class="text-center mb-4">Spanish Conversation Coach</h1>
+        <h1 class="text-center mb-4">Entrenador de Conversación en Español</h1>
 
         <div class="chat-container">
             <div class="messages" ref="messagesContainer">
@@ -111,13 +111,40 @@ export default {
     },
     async mounted() {
         this.initializeModel();
-        this.startConversation();
+        this.loadConversationHistory();
+
+        // Only start a new conversation if there's no existing history
+        if (this.conversation.length === 0) {
+            this.startConversation();
+        }
     },
     methods: {
         initializeModel() {
             this.model = genAI.getGenerativeModel({
-                model: "gemini-2.5-flash-lite"
+                model: "gemini-2.5-flash"
             });
+        },
+        saveConversationHistory() {
+            try {
+                localStorage.setItem('spanishCoachConversation', JSON.stringify({
+                    conversation: this.conversation,
+                    lastUpdated: new Date().toISOString()
+                }));
+            } catch (error) {
+                console.error('Error saving conversation:', error);
+            }
+        },
+        loadConversationHistory() {
+            try {
+                const saved = localStorage.getItem('spanishCoachConversation');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.conversation = data.conversation || [];
+                }
+            } catch (error) {
+                console.error('Error loading conversation:', error);
+                this.conversation = [];
+            }
         },
         buildPrompt(userMessage) {
             let prompt = SYSTEM_INSTRUCTION + "\n\n";
@@ -148,6 +175,7 @@ export default {
                     role: 'assistant',
                     text: response
                 });
+                this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {
                 console.error('Error starting conversation:', error);
@@ -167,6 +195,7 @@ export default {
                 role: 'user',
                 text: message
             });
+            this.saveConversationHistory();
             this.userInput = '';
             this.isLoading = true;
             this.scrollToBottom();
@@ -179,6 +208,7 @@ export default {
                     role: 'assistant',
                     text: response
                 });
+                this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -202,6 +232,7 @@ export default {
                     role: 'assistant',
                     text: response
                 });
+                this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {
                 console.error('Error requesting summary:', error);
@@ -212,6 +243,7 @@ export default {
         async resetConversation() {
             if (confirm('¿Estás seguro de que quieres empezar una nueva conversación?')) {
                 this.conversation = [];
+                localStorage.removeItem('spanishCoachConversation');
                 this.startConversation();
             }
         },
@@ -232,33 +264,41 @@ export default {
 
 <style scoped>
 .spanish-coach {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 2rem auto;
     padding-bottom: 100px;
 }
 
 h1 {
-    color: var(--tertiary-color);
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .chat-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     overflow: hidden;
 }
 
 .messages {
     height: 500px;
     overflow-y: auto;
-    padding: 20px;
-    background-color: #f8f9fa;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .message {
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
     animation: fadeIn 0.3s ease-in;
+    display: flex;
 }
 
 @keyframes fadeIn {
@@ -272,59 +312,139 @@ h1 {
     }
 }
 
+.user-message {
+    justify-content: flex-end;
+}
+
+.assistant-message {
+    justify-content: flex-start;
+}
+
 .message-content {
-    padding: 12px 16px;
-    border-radius: 8px;
-    max-width: 85%;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    max-width: 75%;
 }
 
 .user-message .message-content {
-    background-color: #007bff;
-    color: white;
-    margin-left: auto;
-    text-align: right;
+    background: rgba(102, 126, 234, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: var(--text-light);
 }
 
 .assistant-message .message-content {
-    background-color: white;
-    color: #333;
-    border: 1px solid #dee2e6;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
 }
 
 .message-content strong {
     display: block;
-    margin-bottom: 5px;
-    font-size: 0.9em;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 600;
 }
 
 .message-content p {
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .typing-indicator {
     font-style: italic;
-    color: #6c757d;
+    opacity: 0.8;
 }
 
 .input-area {
-    padding: 20px;
-    background-color: white;
-    border-top: 1px solid #dee2e6;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .input-area textarea {
     resize: none;
     font-size: 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.input-area textarea:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.input-area textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
 
 .button-group button {
     flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button-group button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button-group button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: rgba(102, 126, 234, 0.4);
+    border-color: rgba(102, 126, 234, 0.6);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.6);
+}
+
+.btn-secondary {
+    background: rgba(240, 147, 251, 0.3);
+    border-color: rgba(240, 147, 251, 0.5);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(240, 147, 251, 0.5);
+}
+
+.btn-warning {
+    background: rgba(255, 193, 7, 0.3);
+    border-color: rgba(255, 193, 7, 0.5);
+}
+
+.btn-warning:hover:not(:disabled) {
+    background: rgba(255, 193, 7, 0.5);
 }
 
 /* Scrollbar styling */
@@ -333,29 +453,44 @@ h1 {
 }
 
 .messages::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .messages::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
 }
 
 .messages::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 768px) {
     .spanish-coach {
-        padding: 10px;
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
     }
 
     .messages {
         height: 400px;
+        padding: 1rem;
+    }
+
+    .message-content {
+        max-width: 90%;
     }
 
     .button-group {
         flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
     }
 }
 </style>

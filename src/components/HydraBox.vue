@@ -4,11 +4,16 @@
 </template>
 <script>
 import Hydra from 'hydra-synth'
+import { onBeforeUnmount, ref } from 'vue'
 
 /* eslint-disable */
 export default {
     name: 'HydraBox',
     setup() {
+        const canvasRef = ref(null);
+        const intervalRef = ref(null);
+        const hydraRef = ref(null);
+
         /* Create a canvas element only if there is no canvas yet on the page */
         if (!document.querySelector('canvas')) {
             const canvas = document.createElement('canvas');
@@ -23,6 +28,9 @@ export default {
                 detectAudio: false,
                 canvas: canvas
             }).synth;
+
+            canvasRef.value = canvas;
+            hydraRef.value = h;
 
             const hydra1 = () => {
                 s0.initCam();
@@ -56,14 +64,30 @@ export default {
             }
 
             const hydraFunctions = [hydra1, hydra2, hydra3] // Add more hydra functions here
-            setInterval(() => {
+            intervalRef.value = setInterval(() => {
                 const randomHydraFunction = hydraFunctions[Math.floor(Math.random() * hydraFunctions.length)]
                 randomHydraFunction()
             }, 5000)
 
-
-
             document.querySelector("#app").appendChild(canvas);
+
+            // Cleanup when component unmounts
+            onBeforeUnmount(() => {
+                // Clear the interval
+                if (intervalRef.value) {
+                    clearInterval(intervalRef.value);
+                }
+
+                // Remove the canvas element from DOM
+                if (canvasRef.value && canvasRef.value.parentNode) {
+                    canvasRef.value.parentNode.removeChild(canvasRef.value);
+                }
+
+                // Clear Hydra instance
+                if (hydraRef.value && hydraRef.value.hush) {
+                    hydraRef.value.hush();
+                }
+            });
 
             return { hydra: h, ...hydraFunctions }
         }

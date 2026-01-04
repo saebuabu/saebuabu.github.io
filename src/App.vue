@@ -1,19 +1,19 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/ai">Ai gedicht</router-link> |
-    <router-link to="/hydra">Hydra Visuals</router-link> |
+    <router-link to="/">Home</router-link>
+    <router-link to="/ai">Ai gedicht</router-link>
+    <router-link to="/hydra">Hydra Visuals</router-link>
     <router-link to="/spanish">Spanish Coach</router-link>
   </nav>
   <router-view />
   <!-- fixed donkere footer met een link naar socials en naar abu.saebu.nl -->
   <footer>
       <div class="footer-column">
-        <h4>Abu Saebu is developer, muzikant, tekstschrijver, dichter, docent en coach.</h4>
+        <h4>Github static io pagina van Abu Saebu</h4>
       </div>
       <div class="footer-column">
-        <a href="https://www.linkedin.com/in/abusaebu/" target="_blank">LinkedIn</a>
-        <a href="https://abu.saebu.nl" target="_blank">abu.saebu.nl</a>
+        <a href="https://www.linkedin.com/in/abusaebu/" target="_blank">Mijn LinkedIn</a>
+        <a href="https://abu.saebu.nl" target="_blank">Mijn portfolio</a>
         <span>versiedatum: {{ versionDate }}</span>
       </div>
   </footer>
@@ -24,100 +24,167 @@ export default {
   name: 'App',
   data() {
     return {
-      versionDate: document.lastModified
+      versionDate: new Date().toLocaleDateString('nl-NL', { year: 'numeric', month: 'long', day: 'numeric' })
     };
   }
 };
 
 </script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  /* gebruik een achtergrond kleur met een gradient die van boven donkerder is dan naar beneden  */
-
-  background-image: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
-
-  background-size: cover;
-  background-position: center;
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-attachment: fixed;
   min-height: 100vh;
+  padding-bottom: 120px;
+  position: relative;
 }
 
 :root {
-  --primary-color: rgb(69, 14, 57);
-  --secondary-color: #35495e;
-  --tertiary-color: #f1f1f1;
-  --quaternary-color: #2f0533;
-  --nav-current-color: #80c9e5;
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --accent-color: #f093fb;
+  --text-light: #ffffff;
+  --text-dark: #2d3748;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-h1 {
-  font-size: 2em;
-  text-align: center;
-  color: var(--primary-color);
-}
-
-footer h4 {
-  font-size: 1em;
-  text-align: left;
-  color: var(--tertiary-color);
-}
-
+/* Glassmorphic Navigation */
 nav {
-  padding: 30px;
-  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1.5rem 2rem;
   margin: 0;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 nav a {
-  font-weight: bold;
-  color: #2c3e50;
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 nav a.router-link-exact-active {
-  color: var(--nav-current-color);
+  background: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  font-weight: 600;
 }
 
-nav a {
-  color: white;
-  margin: 0 10px;
-  text-decoration: none;
-
+/* Global heading styles */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* footer styling, fixed onderaan de pagina, donkere achtergrond, witte tekst, 2 kolommen */
+/* Glassmorphic Footer */
 footer {
   position: fixed;
   bottom: 0;
-  width: 100%;
-  background-color: var(--quaternary-color);
-  color: white;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1.5rem 2rem;
   display: flex;
-  justify-content: center;
-  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* anchors in de footer met een | als delimiter */
-.footer-column a {
-  color: var(--tertiary-color);
-  text-decoration: none;
+footer h4 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-light);
   margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .footer-column {
-  margin: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* footer links in een rij */
-.footer-column a {
-  display: inline-block;
+.footer-column a,
+.footer-column span {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* ::after pseudo element met een | als delimiter */
-.footer-column a:not(:last-child)::after {
-  content: "|";
-  margin: 0 5px 0 5px;
+.footer-column a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.footer-column a::after {
+  content: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  nav a {
+    width: 100%;
+    text-align: center;
+  }
+
+  footer {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .footer-column {
+    justify-content: center;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
 }
 </style>
