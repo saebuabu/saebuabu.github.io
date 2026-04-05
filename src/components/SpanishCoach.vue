@@ -289,7 +289,7 @@ h1 {
 }
 
 .messages {
-    height: 500px;
+    max-height: 500px;
     overflow-y: auto;
     padding: 1.5rem;
     background: rgba(0, 0, 0, 0.1);
@@ -360,9 +360,10 @@ h1 {
 
 .input-area {
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(32, 178, 170, 0.18);
+    backdrop-filter: blur(8px);
+    border-top: 2px solid rgba(32, 178, 170, 0.45);
+    border-radius: 0 0 20px 20px;
 }
 
 .input-area textarea {
@@ -371,8 +372,8 @@ h1 {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(32, 178, 170, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(5px);
     color: var(--text-light);
     transition: all 0.3s ease;
@@ -380,9 +381,9 @@ h1 {
 
 .input-area textarea:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    border-color: rgba(32, 178, 170, 0.8);
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.2);
 }
 
 .input-area textarea::placeholder {
@@ -477,7 +478,7 @@ h1 {
     }
 
     .messages {
-        height: 400px;
+        max-height: 400px;
         padding: 1rem;
     }
 
