@@ -1,0 +1,15 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set environment variable
+        run: echo "VUE_APP_GOOGLE_AP_KEY=${{ secrets.VUE_APP_GOOGLE_AP_KEY }}" >> $GITHUB_ENV
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: npm run deploy
