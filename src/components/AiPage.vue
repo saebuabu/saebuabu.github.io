@@ -78,9 +78,16 @@
                 <button v-if="phase > 0" class="btn btn-primary" @click="resetPoem">Reset gedicht</button>
             </div>
         </div>
+        <div v-if="loading" class="text-center mb-3">
+            <div class="spinner-border" role="status"></div>
+            <p class="mt-2" style="color: var(--text-light);">Gedicht wordt gemaakt...</p>
+        </div>
+        <div v-if="errorMessage" class="alert alert-danger mb-3">
+            {{ errorMessage }}
+        </div>
         <div class="row mb-3">
             <div v-for="item in chatsession" :key="item.id" class="mb-3">
-                <pre class="bg-light p-3">{{ item.answer }}</pre>
+                <pre>{{ item.answer }}</pre>
             </div>
         </div>
     </div>
@@ -100,17 +107,26 @@ export default {
             totalPrompt: '',
             chatsession: [],
             phase: 0,
+            loading: false,
+            errorMessage: '',
         };
     },
     methods: {
         async rewritePoem() {
+            this.loading = true;
+            this.errorMessage = '';
             this.chatsession = [];
             this.totalPrompt = 'Her'+ this.totalPrompt + this.feedback;
-
-            const result = await model.generateContent(this.totalPrompt);
-            this.answer = `${result.response.text()}`;
-            this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
-            this.phase++;
+            try {
+                const result = await model.generateContent(this.totalPrompt);
+                this.answer = `${result.response.text()}`;
+                this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
+                this.phase++;
+            } catch (e) {
+                this.errorMessage = 'Er is een fout opgetreden bij het herschrijven van het gedicht. Probeer het opnieuw.';
+            } finally {
+                this.loading = false;
+            }
         },
         resetPoem() {
             this.phase = 0;
@@ -118,16 +134,25 @@ export default {
             this.answer = '';
             this.totalPrompt = '';
             this.chatsession = [];
+            this.errorMessage = '';
         },
         async getPoem() {
+            this.loading = true;
+            this.errorMessage = '';
             this.chatsession = [];
             var i1 = `schrijf een ${this.type} gedicht over ${this.theme}. En laat de emotie ${this.emotion} erin overheersen, of gradueel toenemen of afnemen. Gebruik een enkel moeilijk of ongebruikelijk woord. Steel af en toe uit bekende gedichten van oude oude bekende dichters.`;
             var i2 = ` Het gedicht mag maximaal 33 regels zijn.`;
             this.totalPrompt = i1 + this.prompt + "." + i2;
-            const result = await model.generateContent(this.totalPrompt);
-            this.answer = `${result.response.text()}`;
-            this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
-            this.phase++;
+            try {
+                const result = await model.generateContent(this.totalPrompt);
+                this.answer = `${result.response.text()}`;
+                this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
+                this.phase++;
+            } catch (e) {
+                this.errorMessage = 'Er is een fout opgetreden bij het genereren van het gedicht. Controleer de verbinding en probeer het opnieuw.';
+            } finally {
+                this.loading = false;
+            }
         }
     }
 };
