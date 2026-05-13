@@ -46,9 +46,7 @@
 </template>
 
 <script>
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI(process.env.VUE_APP_GOOGLE_AP_KEY);
+import { generateContent } from '@/services/geminiProxy';
 
 const SYSTEM_INSTRUCTION = `# Spanish Conversation Practice Assistant
 
@@ -106,24 +104,16 @@ export default {
             conversation: [],
             userInput: '',
             isLoading: false,
-            model: null,
         };
     },
     async mounted() {
-        this.initializeModel();
         this.loadConversationHistory();
 
-        // Only start a new conversation if there's no existing history
         if (this.conversation.length === 0) {
             this.startConversation();
         }
     },
     methods: {
-        initializeModel() {
-            this.model = genAI.getGenerativeModel({
-                model: "gemini-2.5-flash"
-            });
-        },
         saveConversationHistory() {
             try {
                 localStorage.setItem('spanishCoachConversation', JSON.stringify({
@@ -169,12 +159,8 @@ export default {
             this.isLoading = true;
             try {
                 const prompt = SYSTEM_INSTRUCTION + "\n\nUser: Hola! Empecemos nuestra conversación.\n\nAssistant:";
-                const result = await this.model.generateContent(prompt);
-                const response = result.response.text();
-                this.conversation.push({
-                    role: 'assistant',
-                    text: response
-                });
+                const response = await generateContent(prompt);
+                this.conversation.push({ role: 'assistant', text: response });
                 this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {
@@ -191,23 +177,15 @@ export default {
             if (!this.userInput.trim() || this.isLoading) return;
 
             const message = this.userInput.trim();
-            this.conversation.push({
-                role: 'user',
-                text: message
-            });
+            this.conversation.push({ role: 'user', text: message });
             this.saveConversationHistory();
             this.userInput = '';
             this.isLoading = true;
             this.scrollToBottom();
 
             try {
-                const prompt = this.buildPrompt(message);
-                const result = await this.model.generateContent(prompt);
-                const response = result.response.text();
-                this.conversation.push({
-                    role: 'assistant',
-                    text: response
-                });
+                const response = await generateContent(this.buildPrompt(message));
+                this.conversation.push({ role: 'assistant', text: response });
                 this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {
@@ -226,12 +204,8 @@ export default {
             this.isLoading = true;
             try {
                 const prompt = this.buildPrompt("Por favor, dame un resumen de nuestra conversación en neerlandés (Dutch), siguiendo el formato de 'Sessie samenvatting' que está en tus instrucciones.");
-                const result = await this.model.generateContent(prompt);
-                const response = result.response.text();
-                this.conversation.push({
-                    role: 'assistant',
-                    text: response
-                });
+                const response = await generateContent(prompt);
+                this.conversation.push({ role: 'assistant', text: response });
                 this.saveConversationHistory();
                 this.scrollToBottom();
             } catch (error) {

@@ -94,10 +94,7 @@
 </template>
 
 <script>
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI(process.env.VUE_APP_GOOGLE_AP_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+import { generateContent } from '@/services/geminiProxy';
 
 export default {
     data() {
@@ -118,8 +115,7 @@ export default {
             this.chatsession = [];
             this.totalPrompt = 'Her'+ this.totalPrompt + this.feedback;
             try {
-                const result = await model.generateContent(this.totalPrompt);
-                this.answer = `${result.response.text()}`;
+                this.answer = await generateContent(this.totalPrompt);
                 this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
                 this.phase++;
             } catch (e) {
@@ -144,8 +140,7 @@ export default {
             var i2 = ` Het gedicht mag maximaal 33 regels zijn.`;
             this.totalPrompt = i1 + this.prompt + "." + i2;
             try {
-                const result = await model.generateContent(this.totalPrompt);
-                this.answer = `${result.response.text()}`;
+                this.answer = await generateContent(this.totalPrompt);
                 this.chatsession.push({ id: this.chatsession.length, prompt: this.prompt, answer: this.answer });
                 this.phase++;
             } catch (e) {
