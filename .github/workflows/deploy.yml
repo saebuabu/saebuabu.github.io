@@ -11,26 +11,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '20'
 
-      - name: Set environment variables
-        run: |
-          echo "VUE_APP_GOOGLE_AP_KEY=${{ secrets.VUE_APP_GOOGLE_AP_KEY }}" >> $GITHUB_ENV
+      - name: Create .env
+        run: echo "${{ secrets.WEBSITE_ENV_PRODUCTION }}" > .env
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Build
-        run: |
-          echo "VUE_APP_GOOGLE_AP_KEY=${{ secrets.VUE_APP_GOOGLE_AP_KEY }}" >> $GITHUB_ENV
-          npm run build
+        run: npm run build
 
-      - name: Deploy
-        run: |
-          npm run deploy
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
