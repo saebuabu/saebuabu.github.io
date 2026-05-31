@@ -2,7 +2,27 @@
     <div class="container mt-5 spanish-coach">
         <h1 class="text-center mb-4">Entrenador de Conversación en Español</h1>
 
-        <div class="chat-container">
+        <!-- Naamscherm -->
+        <div v-if="userName === null" class="access-card">
+            <p class="access-prompt">Wie ben jij?</p>
+            <input
+                v-model="nameInput"
+                @keydown.enter="checkName"
+                type="text"
+                class="form-control name-input"
+                placeholder="Vul je naam in"
+                autofocus
+            />
+            <button @click="checkName" class="btn btn-primary mt-3 w-100">Doorgaan</button>
+        </div>
+
+        <!-- Toegang geweigerd -->
+        <div v-else-if="accessDenied" class="access-card access-denied">
+            <p class="access-prompt">Sorry, <strong>{{ deniedName }}</strong>. Je hebt geen toegang tot deze coach.</p>
+            <button @click="resetAccess" class="btn btn-secondary mt-3">Probeer opnieuw</button>
+        </div>
+
+        <div v-else class="chat-container">
             <div class="messages" ref="messagesContainer">
                 <div v-for="(message, index) in conversation" :key="index"
                      :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message']">
@@ -98,22 +118,53 @@ Maintain awareness of:
 
 Friendly, encouraging, and authentic. Treat Jafar as an intelligent adult learner who appreciates directness and doesn't need excessive praise. Focus on growth, not perfection.`;
 
+const ALLOWED_NAMES = ['abuhanifa', 'jafar', 'silvie'];
+
 export default {
     data() {
         return {
             conversation: [],
             userInput: '',
             isLoading: false,
+            userName: localStorage.getItem('spanishCoachUser') || null,
+            nameInput: '',
+            accessDenied: false,
+            deniedName: '',
         };
     },
     async mounted() {
-        this.loadConversationHistory();
-
-        if (this.conversation.length === 0) {
-            this.startConversation();
+        if (this.userName && ALLOWED_NAMES.includes(this.userName.toLowerCase())) {
+            this.loadConversationHistory();
+            if (this.conversation.length === 0) {
+                this.startConversation();
+            }
         }
     },
     methods: {
+        checkName() {
+            const name = this.nameInput.trim();
+            if (!name) return;
+            if (ALLOWED_NAMES.includes(name.toLowerCase())) {
+                this.userName = name;
+                this.accessDenied = false;
+                localStorage.setItem('spanishCoachUser', name);
+                this.loadConversationHistory();
+                if (this.conversation.length === 0) {
+                    this.startConversation();
+                }
+            } else {
+                this.deniedName = name;
+                this.accessDenied = true;
+                this.userName = '';
+            }
+        },
+        resetAccess() {
+            this.userName = null;
+            this.accessDenied = false;
+            this.nameInput = '';
+            this.deniedName = '';
+            localStorage.removeItem('spanishCoachUser');
+        },
         saveConversationHistory() {
             try {
                 localStorage.setItem('spanishCoachConversation', JSON.stringify({
@@ -241,6 +292,48 @@ export default {
     max-width: 1000px;
     margin: 2rem auto;
     padding-bottom: 100px;
+}
+
+.access-card {
+    max-width: 400px;
+    margin: 4rem auto;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.access-denied {
+    border-color: rgba(255, 100, 100, 0.4);
+    background: rgba(255, 80, 80, 0.1);
+}
+
+.access-prompt {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.name-input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-light);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.name-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.8);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 h1 {
