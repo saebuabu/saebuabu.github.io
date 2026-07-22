@@ -23,6 +23,13 @@
         </div>
 
         <div v-else class="chat-container">
+            <div v-if="showWelcomeBack && lastSessionInfo" class="welcome-back-banner">
+                <span>
+                    Welkom terug!<template v-if="lastSessionInfo.topics_discussed"> Vorige keer ging het over: {{ lastSessionInfo.topics_discussed }}.</template>
+                    <template v-if="lastSessionInfo.level_observation"> Niveau: {{ lastSessionInfo.level_observation }}.</template>
+                </span>
+                <button @click="dismissWelcomeBack" class="banner-close" aria-label="Sluiten">&times;</button>
+            </div>
             <div class="messages" ref="messagesContainer">
                 <div v-for="(message, index) in conversation" :key="index"
                      :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message']">
@@ -37,6 +44,13 @@
                         <p class="typing-indicator">Escribiendo...</p>
                     </div>
                 </div>
+            </div>
+
+            <div v-if="strapiOnline" class="session-status">
+                <span class="level-badge">Nivel: {{ currentLevel || '—' }}</span>
+                <span v-if="strapiSaveStatus === 'saving'" class="save-indicator">Sessie opslaan...</span>
+                <span v-if="strapiSaveStatus === 'saved'" class="save-indicator saved">Sessie opgeslagen</span>
+                <span v-if="strapiSaveStatus === 'failed'" class="save-indicator failed">Opslaan mislukt — lokaal bewaard</span>
             </div>
 
             <div class="input-area">
@@ -67,6 +81,17 @@
 
 <script>
 import { generateContent } from '@/services/geminiProxy';
+import {
+    resolveUser,
+    getRecentSessions,
+    saveSession,
+    updateUserProgress,
+    buildHistoryPreamble,
+    extractFocusPoints,
+    extractLevelObservation,
+    extractTopics,
+    mergeFocusPoints,
+} from '@/services/strapiService';
 
 const SYSTEM_INSTRUCTION = `# Spanish Conversation Practice Assistant
 
@@ -130,17 +155,57 @@ export default {
             nameInput: '',
             accessDenied: false,
             deniedName: '',
+            strapiToken: null,
+            strapiUserId: null,
+            strapiOnline: false,
+            sessionStartedAt: null,
+            historyPreamble: '',
+            focusPoints: [],
+            currentLevel: '',
+            totalSessions: 0,
+            strapiSaveStatus: null,
+            lastSessionInfo: null,
+            showWelcomeBack: false,
         };
     },
     async mounted() {
         if (this.userName && ALLOWED_NAMES.includes(this.userName.toLowerCase())) {
-            this.loadConversationHistory();
-            if (this.conversation.length === 0) {
-                this.startConversation();
-            }
+            await this.initSession();
+        }
+    },
+    async beforeUnmount() {
+        if (this.strapiOnline && this.conversation.length > 2) {
+            const summary = await this.generateSessionSummary();
+            await this.persistSessionToStrapi(summary);
         }
     },
     methods: {
+        async initSession() {
+            this.sessionStartedAt = new Date().toISOString();
+
+            const userRecord = await resolveUser(this.userName);
+            if (userRecord) {
+                this.strapiOnline = true;
+                this.strapiUserId = userRecord.strapiUserId;
+                this.strapiToken = userRecord.token;
+                this.focusPoints = userRecord.focusPoints;
+                this.currentLevel = userRecord.currentLevel;
+                this.totalSessions = userRecord.totalSessions;
+                const sessions = await getRecentSessions(this.strapiUserId, this.strapiToken, 3);
+                this.historyPreamble = buildHistoryPreamble(sessions, this.focusPoints, this.currentLevel);
+                this.lastSessionInfo = sessions[0] || null;
+            }
+
+            this.loadConversationHistory();
+            if (this.conversation.length === 0) {
+                this.startConversation();
+            } else if (this.lastSessionInfo) {
+                this.showWelcomeBack = true;
+            }
+        },
+        dismissWelcomeBack() {
+            this.showWelcomeBack = false;
+        },
         checkName() {
             const name = this.nameInput.trim();
             if (!name) return;
@@ -148,10 +213,7 @@ export default {
                 this.userName = name;
                 this.accessDenied = false;
                 localStorage.setItem('spanishCoachUser', name);
-                this.loadConversationHistory();
-                if (this.conversation.length === 0) {
-                    this.startConversation();
-                }
+                this.initSession();
             } else {
                 this.deniedName = name;
                 this.accessDenied = true;
@@ -188,7 +250,11 @@ export default {
             }
         },
         buildPrompt(userMessage) {
-            let prompt = SYSTEM_INSTRUCTION + "\n\n";
+            let prompt = SYSTEM_INSTRUCTION;
+            if (this.historyPreamble) {
+                prompt += "\n\n" + this.historyPreamble;
+            }
+            prompt += "\n\n";
 
             // Add conversation history
             for (const msg of this.conversation) {
@@ -209,7 +275,8 @@ export default {
         async startConversation() {
             this.isLoading = true;
             try {
-                const prompt = SYSTEM_INSTRUCTION + "\n\nUser: Hola! Empecemos nuestra conversación.\n\nAssistant:";
+                const preamble = this.historyPreamble ? "\n\n" + this.historyPreamble : "";
+                const prompt = SYSTEM_INSTRUCTION + preamble + "\n\nUser: Hola! Empecemos nuestra conversación.\n\nAssistant:";
                 const response = await generateContent(prompt);
                 this.conversation.push({ role: 'assistant', text: response });
                 this.saveConversationHistory();
@@ -266,10 +333,68 @@ export default {
             }
         },
         async resetConversation() {
-            if (confirm('¿Estás seguro de que quieres empezar una nueva conversación?')) {
-                this.conversation = [];
-                localStorage.removeItem('spanishCoachConversation');
-                this.startConversation();
+            if (!confirm('¿Estás seguro de que quieres empezar una nueva conversación?')) return;
+
+            const summary = await this.generateSessionSummary();
+            await this.persistSessionToStrapi(summary);
+
+            this.conversation = [];
+            localStorage.removeItem('spanishCoachConversation');
+            this.sessionStartedAt = new Date().toISOString();
+            this.strapiSaveStatus = null;
+            this.startConversation();
+        },
+        async generateSessionSummary() {
+            const existing = this.conversation
+                .filter(m => m.role === 'assistant')
+                .find(m => m.text.includes('Sessie samenvatting'));
+            if (existing) return existing.text;
+
+            if (this.conversation.length < 4) return '';
+
+            try {
+                const prompt = this.buildPrompt(
+                    "Por favor, dame un resumen de nuestra conversación en neerlandés, siguiendo el formato de 'Sessie samenvatting'."
+                );
+                return await generateContent(prompt);
+            } catch {
+                return '';
+            }
+        },
+        async persistSessionToStrapi(summaryText) {
+            if (!this.strapiOnline || !this.strapiUserId || !summaryText) return;
+            if (this.conversation.length < 2) return;
+
+            this.strapiSaveStatus = 'saving';
+
+            const newFocusPoints = extractFocusPoints(summaryText);
+            const levelObservation = extractLevelObservation(summaryText);
+
+            const success = await saveSession(this.strapiUserId, this.strapiToken, {
+                transcript: JSON.stringify(this.conversation),
+                summary_nl: summaryText,
+                level_observation: levelObservation,
+                topics_discussed: extractTopics(summaryText),
+                new_focus_points: JSON.stringify(newFocusPoints),
+                started_at: this.sessionStartedAt,
+                ended_at: new Date().toISOString(),
+                message_count: this.conversation.length,
+            });
+
+            if (success) {
+                const mergedFocus = mergeFocusPoints(this.focusPoints, newFocusPoints);
+                await updateUserProgress(this.strapiUserId, this.strapiToken, {
+                    focus_points: JSON.stringify(mergedFocus),
+                    current_level: levelObservation || this.currentLevel,
+                    total_sessions: this.totalSessions + 1,
+                    last_session_at: new Date().toISOString(),
+                });
+                this.focusPoints = mergedFocus;
+                this.currentLevel = levelObservation || this.currentLevel;
+                this.totalSessions += 1;
+                this.strapiSaveStatus = 'saved';
+            } else {
+                this.strapiSaveStatus = 'failed';
             }
         },
         formatMessage(text) {
@@ -355,6 +480,34 @@ h1 {
     overflow: hidden;
 }
 
+.welcome-back-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(32, 178, 170, 0.2);
+    border-bottom: 1px solid rgba(32, 178, 170, 0.4);
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.banner-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.3rem;
+    line-height: 1;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.banner-close:hover {
+    opacity: 1;
+}
+
 .messages {
     max-height: 500px;
     overflow-y: auto;
@@ -423,6 +576,37 @@ h1 {
 .typing-indicator {
     font-style: italic;
     opacity: 0.8;
+}
+
+.session-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    background: rgba(0, 0, 0, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.level-badge {
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.save-indicator {
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.save-indicator.saved {
+    color: rgba(120, 220, 150, 0.9);
+    font-style: normal;
+}
+
+.save-indicator.failed {
+    color: rgba(255, 150, 150, 0.9);
+    font-style: normal;
 }
 
 .input-area {
