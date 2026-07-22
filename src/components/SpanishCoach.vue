@@ -170,6 +170,7 @@ export default {
             strapiSaveStatus: null,
             lastSessionInfo: null,
             showWelcomeBack: false,
+            lastSavedMessageCount: 0,
         };
     },
     async mounted() {
@@ -178,7 +179,7 @@ export default {
         }
     },
     async beforeUnmount() {
-        if (this.strapiOnline && this.conversation.length > 2) {
+        if (this.strapiOnline && this.conversation.length > 2 && this.conversation.length > this.lastSavedMessageCount) {
             const summary = await this.generateSessionSummary();
             await this.persistSessionToStrapi(summary);
         }
@@ -249,6 +250,7 @@ export default {
                     const data = JSON.parse(saved);
                     this.conversation = data.conversation || [];
                 }
+                this.lastSavedMessageCount = parseInt(localStorage.getItem('spanishCoachLastSaved') || '0', 10);
             } catch (error) {
                 console.error('Error loading conversation:', error);
                 this.conversation = [];
@@ -345,6 +347,8 @@ export default {
 
             this.conversation = [];
             localStorage.removeItem('spanishCoachConversation');
+            localStorage.removeItem('spanishCoachLastSaved');
+            this.lastSavedMessageCount = 0;
             this.sessionStartedAt = new Date().toISOString();
             this.strapiSaveStatus = null;
             this.startConversation();
@@ -387,6 +391,9 @@ export default {
             });
 
             if (success) {
+                localStorage.setItem('spanishCoachLastSaved', String(this.conversation.length));
+                this.lastSavedMessageCount = this.conversation.length;
+
                 const mergedFocus = mergeFocusPoints(this.focusPoints, newFocusPoints);
                 const progressSaved = await updateUserProgress(this.strapiUserDocId, this.strapiToken, {
                     focus_points: JSON.stringify(mergedFocus),
