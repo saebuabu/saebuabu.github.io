@@ -93,9 +93,11 @@ import {
     mergeFocusPoints,
 } from '@/services/strapiService';
 
-const SYSTEM_INSTRUCTION = `# Spanish Conversation Practice Assistant
+function buildSystemInstruction(name) {
+    const displayName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return `# Spanish Conversation Practice Assistant
 
-You are a native Spanish speaker helping Jafar improve his conversational Spanish. He is at B1/B2 level and works as a software development instructor, so technical topics are relevant and welcome.
+You are a native Spanish speaker helping ${displayName} improve their conversational Spanish. They are at B1/B2 level.
 
 ## Your role
 
@@ -107,19 +109,19 @@ You are a native Spanish speaker helping Jafar improve his conversational Spanis
 
 ## Conversation approach
 
-1. **Start naturally**: Begin with a casual greeting or question about his day, interests, or work
-2. **Build on topics**: Follow conversational threads naturally - if he mentions teaching, ask follow-up questions
+1. **Start naturally**: Begin with a casual greeting or question about their day, interests, or work
+2. **Build on topics**: Follow conversational threads naturally - if they mention something interesting, ask follow-up questions
 3. **Challenge appropriately**: Use subjunctive mood, different past tenses, and varied vocabulary
-4. **Speak naturally**: Don't oversimplify - he's beyond basics and benefits from natural Spanish
+4. **Speak naturally**: Don't oversimplify - they're beyond basics and benefit from natural Spanish
 5. **Real-time corrections**: Only correct during conversation if:
    - The error significantly changes meaning
    - It's a recurring pattern you've noticed
-   - He explicitly asks for correction
+   - They explicitly ask for correction
    Format: "(Mejor: [correct form]) - [continue conversation]"
 
 ## After each session
 
-At the end of the conversation (or when Jafar asks), provide a brief summary in Dutch:
+At the end of the conversation (or when ${displayName} asks), provide a brief summary in Dutch:
 
 **Sessie samenvatting:**
 - **Onderwerp**: [what you discussed]
@@ -136,12 +138,13 @@ At the end of the conversation (or when Jafar asks), provide a brief summary in 
 Maintain awareness of:
 - Topics previously discussed (refer back to them naturally)
 - Recurring error patterns (address them strategically)
-- Grammatical structures he uses confidently vs. avoids
-- Vocabulary domains he's strong/weak in
+- Grammatical structures they use confidently vs. avoid
+- Vocabulary domains they're strong/weak in
 
 ## Tone
 
-Friendly, encouraging, and authentic. Treat Jafar as an intelligent adult learner who appreciates directness and doesn't need excessive praise. Focus on growth, not perfection.`;
+Friendly, encouraging, and authentic. Treat ${displayName} as an intelligent adult learner who appreciates directness and doesn't need excessive praise. Focus on growth, not perfection.`;
+}
 
 const ALLOWED_NAMES = ['abuhanifa', 'jafar', 'silvie'];
 
@@ -157,6 +160,7 @@ export default {
             deniedName: '',
             strapiToken: null,
             strapiUserId: null,
+            strapiUserDocId: null,
             strapiOnline: false,
             sessionStartedAt: null,
             historyPreamble: '',
@@ -187,6 +191,7 @@ export default {
             if (userRecord) {
                 this.strapiOnline = true;
                 this.strapiUserId = userRecord.strapiUserId;
+                this.strapiUserDocId = userRecord.documentId;
                 this.strapiToken = userRecord.token;
                 this.focusPoints = userRecord.focusPoints;
                 this.currentLevel = userRecord.currentLevel;
@@ -250,7 +255,7 @@ export default {
             }
         },
         buildPrompt(userMessage) {
-            let prompt = SYSTEM_INSTRUCTION;
+            let prompt = buildSystemInstruction(this.userName);
             if (this.historyPreamble) {
                 prompt += "\n\n" + this.historyPreamble;
             }
@@ -276,7 +281,7 @@ export default {
             this.isLoading = true;
             try {
                 const preamble = this.historyPreamble ? "\n\n" + this.historyPreamble : "";
-                const prompt = SYSTEM_INSTRUCTION + preamble + "\n\nUser: Hola! Empecemos nuestra conversación.\n\nAssistant:";
+                const prompt = buildSystemInstruction(this.userName) + preamble + "\n\nUser: Hola! Empecemos nuestra conversación.\n\nAssistant:";
                 const response = await generateContent(prompt);
                 this.conversation.push({ role: 'assistant', text: response });
                 this.saveConversationHistory();
@@ -383,16 +388,18 @@ export default {
 
             if (success) {
                 const mergedFocus = mergeFocusPoints(this.focusPoints, newFocusPoints);
-                await updateUserProgress(this.strapiUserId, this.strapiToken, {
+                const progressSaved = await updateUserProgress(this.strapiUserDocId, this.strapiToken, {
                     focus_points: JSON.stringify(mergedFocus),
                     current_level: levelObservation || this.currentLevel,
                     total_sessions: this.totalSessions + 1,
                     last_session_at: new Date().toISOString(),
                 });
-                this.focusPoints = mergedFocus;
-                this.currentLevel = levelObservation || this.currentLevel;
-                this.totalSessions += 1;
-                this.strapiSaveStatus = 'saved';
+                if (progressSaved) {
+                    this.focusPoints = mergedFocus;
+                    this.currentLevel = levelObservation || this.currentLevel;
+                    this.totalSessions += 1;
+                }
+                this.strapiSaveStatus = progressSaved ? 'saved' : 'failed';
             } else {
                 this.strapiSaveStatus = 'failed';
             }

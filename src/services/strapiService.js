@@ -45,6 +45,7 @@ export async function resolveUser(username) {
   const attrs = record.attributes ?? record
   return {
     strapiUserId: record.id,
+    documentId: record.documentId,
     token,
     focusPoints: parseFocusPoints(attrs.focus_points),
     currentLevel: attrs.current_level || '',
@@ -82,8 +83,8 @@ export async function saveSession(strapiUserId, token, sessionData) {
   return !!result
 }
 
-export async function updateUserProgress(strapiUserId, token, updates) {
-  const result = await strapiPut(`/api/spanish-coach-users/${strapiUserId}`, { data: updates }, token)
+export async function updateUserProgress(documentId, token, updates) {
+  const result = await strapiPut(`/api/spanish-coach-users/${documentId}`, { data: updates }, token)
   return !!result
 }
 
